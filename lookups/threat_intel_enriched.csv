@@ -451,3 +451,6 @@ a0624f1da5b028b0edf96e3152d5f45a28e52e95b2e1c251429e819cba823e87,sha256,malwareb
 d8b2e404bea7fea43a3ee579a2b4f823bb5da27a584cfa5b2a57e72527c6c15c,sha256,malwarebazaar,2025-10-19 21:51:29,55,72,malware,spreader;pedll;64bits,2025-10-19T21:51:29.721111,success
 311a8539d186ec9c1ebf3f006d5459c70dc41678c49e0b3db023b16700cae3bf,sha256,malwarebazaar,2025-10-19 21:51:38,58,76,malware,pedll;spreader,2025-10-19T21:51:38.506581,success
 55175d4abf013370017879e99fb85f1fcfc9edb7627c74b82eb8ba492f0c50d6,sha256,malwarebazaar,2025-10-19 21:51:47,36,47,malware,spreader;arm;detect-debug-environment;elf,2025-10-19T21:51:47.380987,success
+5373ad48b44d96182359fa301769a85fa0d920a25a4e278e9ca9d628fcbfb6b7,sha256,malwarebazaar,2025-10-19 22:00:51,39,51,malware,checks-hostname;detect-debug-environment;shell;sets-process-name,2025-10-19T22:00:51.518239,success
+9988cbf2a04d6627e1c2fbfb90f16e121192dfbd5343719f2ad5b16d58bda737,sha256,malwarebazaar,2025-10-19 22:01:00,39,51,malware,elf;sets-process-name;detect-debug-environment;spreader;arm,2025-10-19T22:01:00.401060,success
+fa40eb73c96f983210bc488bb291e0fa1eb551b5577aa5db53ea8058aba814d7,sha256,malwarebazaar,2025-10-19 22:01:09,38,50,malware,spreader;elf,2025-10-19T22:01:09.175934,success
