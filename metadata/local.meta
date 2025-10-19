@@ -1,0 +1,24 @@
+[]
+export = system
+
+[transforms/threat_intel_enriched]
+export = system
+owner = nobody
+
+[lookups/threat_intel_enriched.csv]
+access = read : [ * ], write : [ admin ]
+export = system
+owner = nobody
+version = 9.3.2
+modtime = 1760357730.182382000
+
+[transforms/final_threat_intel_enriched]
+version = 9.3.2
+modtime = 1760357486.581475000
+
+[transforms/hash-threat-intelligent]
+access = read : [ * ], write : [ admin ]
+export = system
+owner = m.yaghubi
+version = 9.3.2
+modtime = 1760357809.944255000

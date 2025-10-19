@@ -1,0 +1,14 @@
+# Log files
+*.log
+var/logs/*
+
+# Cache  
+__pycache__/
+*.pyc
+
+# Backups
+*.bak
+*.backup
+
+# Temporary files
+*.tmp

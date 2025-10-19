@@ -1,0 +1,108 @@
+{
+  "timestamp": "2025-10-19T13:42:45.704025",
+  "overall_status": "critical",
+  "components": {
+    "network": {
+      "threatfox.abuse.ch": {
+        "status": "reachable",
+        "error": ""
+      },
+      "bazaar.abuse.ch": {
+        "status": "reachable",
+        "error": ""
+      },
+      "sslbl.abuse.ch": {
+        "status": "reachable",
+        "error": ""
+      },
+      "google.com": {
+        "status": "reachable",
+        "error": ""
+      }
+    },
+    "ti_sources": {
+      "threatfox_sha256": {
+        "status": "curl_error",
+        "error": "curl failed: curl: (77) error setting certificate file: /opt/splunk/openssl/cert.pem",
+        "last_checked": "2025-10-19T13:42:45.946349"
+      },
+      "threatfox_all": {
+        "status": "curl_error",
+        "error": "curl failed: curl: (77) error setting certificate file: /opt/splunk/openssl/cert.pem",
+        "last_checked": "2025-10-19T13:42:48.083802"
+      },
+      "malwarebazaar": {
+        "status": "curl_error",
+        "error": "curl failed: curl: (77) error setting certificate file: /opt/splunk/openssl/cert.pem",
+        "last_checked": "2025-10-19T13:42:50.223647"
+      },
+      "sslbl": {
+        "status": "curl_error",
+        "error": "curl failed: curl: (77) error setting certificate file: /opt/splunk/openssl/cert.pem",
+        "last_checked": "2025-10-19T13:42:52.363011"
+      }
+    },
+    "data_freshness": {
+      "intel_bad_hashes": {
+        "file_age_hours": 0.0,
+        "row_count": 1676,
+        "sources": {
+          "malwarebazaar": 704,
+          "threatview": 972
+        },
+        "status": "fresh"
+      },
+      "intel_bad_hashes_enriched": {
+        "file_age_hours": 171.01,
+        "vt_stats": {
+          "total": 30,
+          "with_malicious": 30,
+          "with_suspicious": 0,
+          "errors": 0
+        },
+        "status": "stale"
+      }
+    },
+    "vt_cache": {
+      "status": "healthy",
+      "cache_files": 3,
+      "valid_cache_files": 3,
+      "total_cache_size_mb": 0.0,
+      "average_age_hours": 189.81
+    },
+    "system_resources": {
+      "disk": {
+        "disk_usage": "51%",
+        "available": "139G",
+        "used": "142G",
+        "total": "293G",
+        "status": "healthy"
+      },
+      "memory": {
+        "total_mb": 16008,
+        "used_mb": 5313,
+        "usage_percent": 33.2,
+        "status": "healthy"
+      }
+    }
+  },
+  "component_status": {
+    "network": {
+      "score": 1.0,
+      "status": "healthy"
+    },
+    "sources": {
+      "score": 0.0,
+      "status": "critical"
+    },
+    "freshness": {
+      "score": 0.5,
+      "status": "warning"
+    },
+    "cache": {
+      "score": 1.0,
+      "status": "healthy"
+    }
+  },
+  "overall_score": 0.5
+}

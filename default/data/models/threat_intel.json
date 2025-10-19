@@ -1,0 +1,59 @@
+{
+  "modelName": "threat_intel",
+  "displayName": "Threat Intelligence Data Model",
+  "description": "Model to organize threat hash intelligence data",
+  "objects": [
+    {
+      "objectName": "threat_hash",
+      "displayName": "Threat Hash",
+      "fields": [
+        {"fieldName": "hash"},
+        {"fieldName": "hash_type"},
+        {"fieldName": "source"},
+        {"fieldName": "first_seen"}
+      ],
+      "children": [
+        {
+          "objectName": "attributes",
+          "displayName": "Attributes",
+          "fields": [
+            {"fieldName": "vt_malicious"},
+            {"fieldName": "vt_suspicious"},
+            {"fieldName": "vt_undetected"},
+            {"fieldName": "vt_harmless"}
+          ]
+        },
+        {
+          "objectName": "threat_info",
+          "displayName": "Threat Information",
+          "fields": [
+            {"fieldName": "vt_suggested_threat_label"},
+            {"fieldName": "vt_tags"},
+            {"fieldName": "vt_names"}
+          ]
+        },
+        {
+          "objectName": "file_info",
+          "displayName": "File Information",
+          "fields": [
+            {"fieldName": "vt_file_size"},
+            {"fieldName": "vt_file_type"},
+            {"fieldName": "vt_sha256"},
+            {"fieldName": "vt_md5"},
+            {"fieldName": "vt_sha1"}
+          ]
+        },
+        {
+          "objectName": "timeline",
+          "displayName": "Timeline Information",
+          "fields": [
+            {"fieldName": "vt_first_submission"},
+            {"fieldName": "vt_last_analysis"},
+            {"fieldName": "vt_last_updated"}
+          ]
+        }
+      ],
+      "search": "| inputlookup final_threat_intel_enriched"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+# ----- Lookup DEFINITIONS (transforms) -----
+[transforms/ti_bad_domains]
+export = system
+owner = nobody
+
+[transforms/ti_bad_hashes]
+export = system
+owner = nobody
+
+
+[transforms/LOOKUP-hash-ti]
+export = system
+owner = nobody
+
+[transforms/LOOKUP-domain-ti]
+export = system
+owner = nobody
+
+# ----- Lookup TABLE FILES (CSV files) -----
+[lookups/intel_bad_domains.csv]
+export = system
+owner = nobody
+
+[lookups/intel_bad_hashes.csv]
+export = system
+owner = nobody
+

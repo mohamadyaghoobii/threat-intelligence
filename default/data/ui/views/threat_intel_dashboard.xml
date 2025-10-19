@@ -1,0 +1,327 @@
+<dashboard version="1.1">
+  <label>Threat Intelligence Dashboard</label>
+  <description>Real-time threat monitoring with VirusTotal enriched intelligence</description>
+  
+  <init>
+    <set token="time_range">-24h@h</set>
+    <set token="trend_span">15m</set>
+    <set token="dest_host">*</set>
+    <set token="src_ip">*</set>
+    <set token="data_model">threat_intel</set>
+  </init>
+  
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="time_range" searchWhenChanged="true">
+      <label>Time Range</label>
+      <default>-24h@h</default>
+    </input>
+    
+    <input type="dropdown" token="trend_span" searchWhenChanged="true">
+      <label>Trend Span</label>
+      <choice value="1m">1 minute</choice>
+      <choice value="5m">5 minutes</choice>
+      <choice value="15m">15 minutes</choice>
+      <choice value="1h">1 hour</choice>
+      <default>15m</default>
+    </input>
+    
+    <input type="text" token="dest_host" searchWhenChanged="true">
+      <label>Destination Host (wildcard)</label>
+      <default>*</default>
+    </input>
+    
+    <input type="text" token="src_ip" searchWhenChanged="true">
+      <label>Source IP (wildcard)</label>
+      <default>*</default>
+    </input>
+    
+    <input type="dropdown" token="data_model" searchWhenChanged="true">
+      <label>Data Model</label>
+      <choice value="threat_intel">Threat Intelligence</choice>
+      <choice value="all_data">All Data Sources</choice>
+      <choice value="network_traffic">Network Traffic</choice>
+      <choice value="endpoint_security">Endpoint Security</choice>
+      <default>threat_intel</default>
+    </input>
+  </fieldset>
+  
+  <row>
+    <panel>
+      <title>Threat Intelligence Overview - $time_range$</title>
+      <single>
+        <search>
+          <query>
+| inputlookup final_threat_intel_enriched
+| stats count as total_threats
+| eval total_threats = if(total_threats > 0, total_threats, 0)
+          </query>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="underLabel">TOTAL THREATS</option>
+        <option name="colorBy">value</option>
+        <option name="colorMode">gradient</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+    
+    <panel>
+      <title>High-Risk Threats - $trend_span$ Trend</title>
+      <single>
+        <search>
+          <query>
+| inputlookup final_threat_intel_enriched
+| where vt_malicious >= 20
+| stats count as high_risk_threats
+          </query>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="underLabel">HIGH RISK</option>
+        <option name="useColors">1</option>
+        <option name="rangeColors">["0xdc4e41","0xf1813f","0xf8be34"]</option>
+      </single>
+    </panel>
+    
+    <panel>
+      <title>Avg Malicious Score - $data_model$</title>
+      <single>
+        <search>
+          <query>
+| inputlookup final_threat_intel_enriched
+| stats avg(vt_malicious) as avg_malicious
+| eval avg_malicious = round(avg_malicious, 1)
+          </query>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="colorBy">value</option>
+        <option name="colorMode">gradient</option>
+        <option name="underLabel">AVG SCORE</option>
+        <option name="useColors">1</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+      </single>
+    </panel>
+  </row>
+  
+  <row>
+    <panel>
+      <title>Threat Classification Distribution - $time_range$</title>
+      <chart>
+        <search>
+          <query>
+| inputlookup final_threat_intel_enriched
+| eval threat_label = case(
+    vt_suggested_threat_label=="", "Unknown/Unclassified",
+    vt_suggested_threat_label=="trojan.", "Trojan",
+    vt_suggested_threat_label=="malware", "Malware", 
+    vt_suggested_threat_label=="ransomware", "Ransomware",
+    vt_suggested_threat_label=="backdoor", "Backdoor",
+    vt_suggested_threat_label=="worm", "Worm",
+    true(), vt_suggested_threat_label
+)
+| stats count by threat_label
+| sort - count
+          </query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="height">250</option>
+        <option name="charting.chart.showPercent">true</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0</option>
+      </chart>
+    </panel>
+    
+    <panel>
+      <title>Malicious Score Distribution - $data_model$</title>
+      <chart>
+        <search>
+          <query>
+| inputlookup final_threat_intel_enriched
+| eval risk_category = case(
+    vt_malicious >= 40, "Critical (40+)",
+    vt_malicious >= 20, "High (20-39)", 
+    vt_malicious >= 10, "Medium (10-19)",
+    vt_malicious >= 1, "Low (1-9)",
+    vt_malicious == 0, "Clean (0)",
+    true(), "Unknown"
+)
+| stats count by risk_category
+| sort count
+          </query>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="height">250</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+      </chart>
+    </panel>
+  </row>
+  
+  <row>
+    <panel>
+      <title>Top Threat Hashes - Source: $src_ip$ to Destination: $dest_host$</title>
+      <table>
+        <search>
+          <query>
+| inputlookup final_threat_intel_enriched
+| eval hash_short = substr(hash, 1, 16) + "..."
+| eval threat_status = case(
+    vt_malicious >= 30, "CRITICAL",
+    vt_malicious >= 20, "HIGH",
+    vt_malicious >= 10, "MEDIUM", 
+    vt_malicious >= 1, "LOW",
+    true(), "UNKNOWN"
+)
+| eval file_info = coalesce(vt_file_type, "Unknown File Type")
+| table hash_short, vt_malicious, threat_status, vt_suggested_threat_label, vt_tags, file_info, first_seen
+| sort - vt_malicious
+          </query>
+        </search>
+        <option name="count">10</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">true</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="threat_status">
+          <colorPalette type="map">{"CRITICAL":#DC4E41,"HIGH":#F8BE34,"MEDIUM":#0877A6,"LOW":#53A051,"UNKNOWN":#6E6E6E}</colorPalette>
+        </format>
+        <format type="color" field="vt_malicious">
+          <colorPalette type="map">{"0":#53A051,"1":#0877A6,"10":#F8BE34,"20":#F1813F,"30":#DC4E41}</colorPalette>
+        </format>
+      </table>
+    </panel>
+  </row>
+  
+  <row>
+    <panel>
+      <title>Threat Detection Timeline - Trend Span: $trend_span$</title>
+      <chart>
+        <search>
+          <query>
+| inputlookup final_threat_intel_enriched
+| eval time=strptime(first_seen, "%Y-%m-%d %H:%M:%S")
+| where isnotnull(time)
+| bin time span=$trend_span$
+| eval threat_severity = case(
+    vt_malicious >= 20, "High",
+    vt_malicious >= 10, "Medium",
+    vt_malicious >= 1, "Low",
+    true(), "Unknown"
+)
+| timechart span=$trend_span$ count by threat_severity
+          </query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="height">300</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.chart.stackMode">stacked</option>
+      </chart>
+    </panel>
+  </row>
+  
+  <row>
+    <panel>
+      <title>File Type Analysis - $data_model$ Model</title>
+      <chart>
+        <search>
+          <query>
+| inputlookup final_threat_intel_enriched
+| eval file_type = case(
+    match(vt_file_type, "(?i)executable"), "Executable",
+    match(vt_file_type, "(?i)script"), "Script",
+    match(vt_file_type, "(?i)document"), "Document",
+    match(vt_file_type, "(?i)archive"), "Archive",
+    isnotnull(vt_file_type), vt_file_type,
+    true(), "Unknown"
+)
+| stats 
+    count as total_files,
+    avg(vt_malicious) as avg_malicious_score
+    by file_type
+| eval avg_malicious_score = round(avg_malicious_score, 1)
+| sort - avg_malicious_score
+          </query>
+        </search>
+        <option name="charting.chart">bar</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">false</option>
+        <option name="height">250</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+      </chart>
+    </panel>
+    
+    <panel>
+      <title>Threat Tag Cloud - $time_range$</title>
+      <chart>
+        <search>
+          <query>
+| inputlookup final_threat_intel_enriched
+| eval tags = split(vt_tags, ";")
+| mvexpand tags
+| search tags!=""
+| stats count by tags
+| sort - count
+| head 15
+          </query>
+        </search>
+        <option name="charting.chart">bar</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="height">250</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+      </chart>
+    </panel>
+  </row>
+  
+  <row>
+    <panel>
+      <title>Threat Hash Matching Results - Source: $src_ip$</title>
+      <table>
+        <search>
+          <query>
+| inputlookup final_threat_intel_enriched
+| where isnotnull(vt_malicious)
+| eval match_type = case(
+    vt_malicious >= 20, "HIGH CONFIDENCE MATCH",
+    vt_malicious >= 10, "MEDIUM CONFIDENCE MATCH", 
+    vt_malicious >= 1, "LOW CONFIDENCE MATCH",
+    true(), "UNKNOWN THREAT"
+)
+| eval threat_hash = substr(hash, 1, 20) + "..."
+| table first_seen, threat_hash, match_type, vt_malicious, vt_suggested_threat_label, vt_file_type
+| sort - first_seen
+          </query>
+        </search>
+        <option name="count">10</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="match_type">
+          <colorPalette type="map">{"HIGH CONFIDENCE MATCH":#DC4E41,"MEDIUM CONFIDENCE MATCH":#F8BE34,"LOW CONFIDENCE MATCH":#0877A6,"UNKNOWN THREAT":#6E6E6E}</colorPalette>
+        </format>
+      </table>
+    </panel>
+  </row>
+</dashboard>
