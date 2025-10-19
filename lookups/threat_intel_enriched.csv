@@ -244,3 +244,16 @@ b45bdef80933435e9840ed965fe778113490cb1f9afc0baee06301c1ad06836e,sha256,malwareb
 ec942d84ec57cc59f0ec4eda261ba088df6db6594620d4670d46bb4ccf7f824d,sha256,malwarebazaar,2025-10-19 17:57:32,36,47,malware,spreader;elf;upx,2025-10-19T17:57:32.746030,success
 e133b2bdca392330464db0c7bca9ef03128c68c7d474edd3d24680fda250f486,sha256,malwarebazaar,2025-10-19 17:57:41,31,40,malware,64bits;upx;elf,2025-10-19T17:57:41.494408,success
 a5bbbc56e90ad697bd49cc950f982ad90da48c56838b1ba30a9a5e930677fe76,sha256,malwarebazaar,2025-10-19 17:57:50,29,38,malware,upx;arm;detect-debug-environment;elf,2025-10-19T17:57:50.386539,success
+3fb5030bc6b88c6a9ba8f5ee2a08094f8390a8825546d970dfacd3cd58ce4cd4,sha256,malwarebazaar,2025-10-19 18:05:27,45,59,malware,elf,2025-10-19T18:05:27.982938,success
+9be8ec509eccd01d5c7698e6a67b5d001f1c77bceb9cdcdf4b2cac43b1bc32cc,sha256,malwarebazaar,2025-10-19 18:05:36,39,51,malware,elf;upx,2025-10-19T18:05:36.771055,success
+f2feb0015b5cce34b0b77b38130b8847288a209a0b3c8d1345ba2be630f22faa,sha256,malwarebazaar,2025-10-19 18:05:45,30,39,malware,elf;upx;arm;detect-debug-environment,2025-10-19T18:05:45.789187,success
+fc09d9d48b1fa771b39aa50bb1fe77e3dfb8213283e0a6a693946dad33edd393,sha256,malwarebazaar,2025-10-19 18:05:54,36,47,malware,elf;upx,2025-10-19T18:05:54.593862,success
+cece11963249ce094941b57bff342db7a322bea4e74250c10503abdac6b82aef,sha256,malwarebazaar,2025-10-19 18:06:03,32,42,malware,shell;checks-hostname;detect-debug-environment,2025-10-19T18:06:03.465199,success
+57a870191cfacd9e04d206e9a33c1f01262374532525f558add1cc4e4d73cee1,sha256,malwarebazaar,2025-10-19 18:06:12,38,50,malware,elf;arm;detect-debug-environment;upx,2025-10-19T18:06:12.649328,success
+3985f2bd963d32f6bd4e291979b29d4fffb0ccd5d1cb4f1ae87b4d4c3d61b827,sha256,malwarebazaar,2025-10-19 18:06:21,11,14,malware,detect-debug-environment;64bits;upx;elf;sets-process-name,2025-10-19T18:06:21.434716,success
+865ab575fa28d68e2c98fb0425584756bd47a7f985a9eb026135d9cb4177f899,sha256,malwarebazaar,2025-10-19 18:06:30,30,39,malware,cve-2017-17215;elf;spreader;exploit,2025-10-19T18:06:30.218180,success
+c4381c1d7a61c78e12a7b903d1f5ab531c7605a814022e90f3020d0a3c3d8a15,sha256,malwarebazaar,2025-10-19 18:06:39,22,28,malware,detect-debug-environment;sets-process-name;elf;service-scan,2025-10-19T18:06:39.029315,success
+533000a78d42bee90839ed417fb216bf9dbb6afdbb5e285efe3bda5a24d8e0a5,sha256,malwarebazaar,2025-10-19 18:06:48,32,42,malware,detect-debug-environment;service-scan;sets-process-name;elf,2025-10-19T18:06:48.235465,success
+eaf3447663d95584650861c8c2afa0cceff6df64e0215b27ebbfa777a0c65ec7,sha256,malwarebazaar,2025-10-19 18:06:57,32,42,malware,elf;sets-process-name;arm;service-scan;detect-debug-environment,2025-10-19T18:06:57.036841,success
+b399eaf6238be55d5967d150d8ddce452ca38d9d283b5ed0a4693fecd86a8819,sha256,malwarebazaar,2025-10-19 18:07:05,31,40,malware,elf,2025-10-19T18:07:05.777903,success
+e827115ddaece0476a81cd528961283e570eaa9339fb58b483c02630889064a0,sha256,malwarebazaar,2025-10-19 18:07:14,31,40,malware,elf,2025-10-19T18:07:14.525230,success
