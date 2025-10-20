@@ -677,3 +677,5 @@ a084859df6d1be4ff8885351a71ac79c4db2798335537a732ad0f0ffc8a39729,sha256,malwareb
 9144eab8a5bfcaa07cbf5d2a62db41d98aace11e09adaaf6cf7a681bc6fa3a98,sha256,malwarebazaar,2025-10-20 11:43:53,26,34,malware,obfuscated;android;telephony;apk;reflection,2025-10-20T11:43:53.780754,success
 9263d8da5ad1361a4888245e04be860f53f51c70e21aba8579abc22735b70134,sha256,malwarebazaar,2025-10-20 11:51:13,19,25,malware,arm;elf,2025-10-20T11:51:13.415301,success
 0234e99ea1f60dc0dc17b5653c4117403664e18fbc84344efa98e904cae1bea9,sha256,malwarebazaar,2025-10-20 11:53:17,24,31,malware,apk;detect-debug-environment;telephony;android;checks-gps,2025-10-20T11:53:17.618349,success
+808fdfb482f8fb4fe6fd40905a7868f279d797982093ee10e60267a27882f026,sha256,malwarebazaar,2025-10-20 12:09:47,18,23,malware,invalid-signature;assembly;macro-create-ole;peexe;long-sleeps,2025-10-20T12:09:47.143359,success
+8553879c0ba64a82eace01f4c928478c981e9d90117d236e949c0daf8b703a1b,sha256,malwarebazaar,2025-10-20 12:09:55,5,6,suspicious,detect-debug-environment;executes-dropped-file;calls-wmi;bat,2025-10-20T12:09:55.896585,success
