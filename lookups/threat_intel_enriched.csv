@@ -674,3 +674,4 @@ d9bd3f671095f7cd16e8f62200b7fd54c7f1095cecd922eb1a1395a5f41655c3,sha256,malwareb
 a084859df6d1be4ff8885351a71ac79c4db2798335537a732ad0f0ffc8a39729,sha256,malwarebazaar,2025-10-20 11:33:55,17,22,malware,arm;elf;detect-debug-environment,2025-10-20T11:33:55.571383,success
 39521ec09367a85986a7ed76a5c4010581a410531bd4a7db14ff9cc05b61cd99,sha256,malwarebazaar,2025-10-20 11:34:13,36,47,malware,peexe;persistence;detect-debug-environment,2025-10-20T11:34:13.349306,success
 363066d50a8cf2995bc2875279cfb90cd478bd150d09a3adaaa2cddd85a8283c,sha256,malwarebazaar,2025-10-20 11:34:22,37,48,malware,64bits;peexe;long-sleeps;assembly;persistence,2025-10-20T11:34:22.167044,success
+9144eab8a5bfcaa07cbf5d2a62db41d98aace11e09adaaf6cf7a681bc6fa3a98,sha256,malwarebazaar,2025-10-20 11:43:53,26,34,malware,obfuscated;android;telephony;apk;reflection,2025-10-20T11:43:53.780754,success
