@@ -610,3 +610,4 @@ f205bcde8042be9cb8385fe6560248e4965524e2972c93e6796fb7cea77a343e,sha256,malwareb
 d7d387cdde1331334920b32b76e586f31f47693a911aad292305b5deab677a5d,sha256,malwarebazaar,2025-10-20 08:08:48,32,42,malware,malware;sets-process-name;cve-2017-17215;spreader;detect-debug-environment,2025-10-20T08:08:48.652064,success
 86dddfce5fd50817a1057781d87bfe7883978a06b4dd9b9e67e5559db253b358,sha256,malwarebazaar,2025-10-20 08:08:57,36,47,malware,arm;elf;sets-process-name;detect-debug-environment,2025-10-20T08:08:57.422365,success
 0813a3d8b8a7697e751e2d42e35738ca7b37311f36439371547f8d5eeb4853b8,sha256,malwarebazaar,2025-10-20 08:09:06,36,47,malware,elf,2025-10-20T08:09:06.157453,success
+083fcecbe81d2d8312afa5f2ea3a18c9e4d295f0f5e5064497f70a07054b7931,sha256,malwarebazaar,2025-10-20 09:20:57,37,48,malware,shell;checks-hostname;sets-process-name;detect-debug-environment,2025-10-20T09:20:57.899142,success
