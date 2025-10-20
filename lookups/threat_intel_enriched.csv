@@ -695,3 +695,11 @@ fbb2b930a5ee2aa5b2b70e7d72af82982dec10cb8ac3b8f8a64ab3be2d0b5edb,sha256,malwareb
 4e102098f6ae486184b4729d28eea464d77b2fb18991d9feefac6f11e8fa0f43,sha256,malwarebazaar,2025-10-20 13:07:44,45,59,malware,invalid-signature;overlay;signed;detect-debug-environment;peexe,2025-10-20T13:07:44.377199,success
 7adce544b62e952c35eda61e57a188834b85bade02d1112ac2e8cf910bcb5903,sha256,malwarebazaar,2025-10-20 13:07:53,51,67,malware,peexe,2025-10-20T13:07:53.216475,success
 d98a372deb31439799f2cfdf7a8a0421d71d8c6dc9a2144ba7bcc6894c14f5b2,sha256,malwarebazaar,2025-10-20 13:08:02,35,46,malware,checks-bios;malware;checks-network-adapters;calls-wmi;detect-debug-environment,2025-10-20T13:08:02.052151,success
+f9926b77fd47dffc66e6f22e4ecd4d0f1b1b3e4b768064bb22b64be3094569f6,sha256,malwarebazaar,2025-10-20 13:15:11,43,56,malware,calls-wmi;detect-debug-environment;peexe;assembly;overlay,2025-10-20T13:15:11.986504,success
+22f3d60f3e7d848978b4c80bb6d895f77e2c335fb2f75a6a6eabae14b0a705eb,sha256,malwarebazaar,2025-10-20 13:15:20,45,59,malware,assembly;peexe;spreader;malware,2025-10-20T13:15:20.822258,success
+72ed08821143d93ae96ff8f16add76ea0b0d154c8a71df373ab66083f93c53d2,sha256,malwarebazaar,2025-10-20 13:15:29,27,35,malware,malware;peexe;spreader,2025-10-20T13:15:29.627689,success
+0d968113633cd55380e5becfddaaf11b8ff3abae61f19428d35770b68f870f19,sha256,malwarebazaar,2025-10-20 13:15:38,5,6,suspicious,run-file;vba;run-dll;exe-pattern;obfuscated,2025-10-20T13:15:38.538611,success
+8527481bf8d065f50c91640a409287e3ca699ce3ecaf9760009f2e9dae448788,sha256,malwarebazaar,2025-10-20 13:15:47,33,43,malware,long-sleeps;malware;detect-debug-environment;spreader;peexe,2025-10-20T13:15:47.422713,success
+1d2a2b5e545def1978b91058fe027033b646d1bc1876b219b0963a073141e867,sha256,malwarebazaar,2025-10-20 13:16:22,1,1,unknown,bat,2025-10-20T13:16:22.434077,success
+877f67f996715f7391c0613b8539f5f480df60ee37c987df636e281399a9f4e0,sha256,malwarebazaar,2025-10-20 13:16:31,6,7,suspicious,long-sleeps;javascript,2025-10-20T13:16:31.166500,success
+3aece1e84c3a29c503ae917c6b300c5198e7ca982a6f8694d09970d47ccc18b3,sha256,malwarebazaar,2025-10-20 13:16:40,40,52,malware,long-sleeps;assembly;spreader;calls-wmi;clipboard,2025-10-20T13:16:40.251677,success
