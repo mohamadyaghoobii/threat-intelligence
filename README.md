@@ -64,11 +64,7 @@ Created for SOC and DFIR teams:
 
 ---
 
-## 🏗️ Architecture Diagram
 
-![TI Architecture](https://i.imgur.com/H2U5t9L.png)
-
----
 
 ## 📦 Quick Deployment Guide
 
