@@ -201,6 +201,10 @@ Single entrypoint used by cron. Orchestrates the full pipeline:
 3. GitHub synchronization  
 4. Pipeline status updates  
 
+## 🖼️ Nginx TI Feed 
+
+![Nginx TI Feed Screenshot](https://i.postimg.cc/V6HwNpgw/ginx-server.png)
+
 ### `check_ti_health.py`
 
 Validates system health, feed integrity, and recent run status.
