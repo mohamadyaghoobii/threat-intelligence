@@ -203,7 +203,7 @@ Single entrypoint used by cron. Orchestrates the full pipeline:
 
 ## 🖼️ Nginx TI Feed 
 
-![Nginx TI Feed Screenshot](https://i.postimg.cc/V6HwNpgw/ginx-server.png)
+[![ginx-server.png](https://i.postimg.cc/V6HwNpgw/ginx-server.png)](https://postimg.cc/wyJZfWn4)
 
 ### `check_ti_health.py`
 
