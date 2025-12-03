@@ -186,7 +186,11 @@ Adjust paths inside this script if your repository or web root is different.
 
 ### `github_ti_sync.sh`
 
-Handles GitHub synchronization of the latest CSV and metadata.
+Synchronizes the latest CSV and metadata to the GitHub repository and updates the Nginx feed symlink at:
+
+```text
+/var/www/central-ti/threat_intel_latest.csv
+```
 
 ### `central_ti_manager.py`
 
@@ -212,7 +216,7 @@ Helper script for testing the Splunk dashboard and lookup integration.
 Recommended cron entry to run the full pipeline every 15 minutes:
 
 ```bash
-*/15 * * * * /usr/bin/python3 /opt/central-ti-repository/bin/central_ti_manager.py >> /opt/central-ti-repository/var/logs/central_ti_manager.log 2>&1
+*/15 * * * * /usr/bin/python3 /opt/splunk/etc/apps/hash-threat-intelligent/bin/central_ti_manager.py >> /opt/splunk/etc/apps/hash-threat-intelligent/var/logs/central_ti_manager.log 2>&1
 ```
 
 Key artifacts produced on each run:
@@ -312,7 +316,6 @@ Recommended operational best practices:
 - Periodic verification of GitHub and Nginx synchronization  
 
 ---
-
 
 ## ⭐ About the Project
 
