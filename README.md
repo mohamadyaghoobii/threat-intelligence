@@ -2,10 +2,6 @@
 
 A fully automated, production‑grade system for **collecting, enriching, distributing, and monitoring** threat intelligence across enterprise environments.
 
-![Central Threat Intelligence Feed](central-ti-dashboard.png)
-
-This screenshot shows the Splunk dashboard consuming the centralized malware hash feed.
-
 ---
 
 ## 🧠 Overview
