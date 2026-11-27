@@ -1,0 +1,658 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Ojan read-only SIEM API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:18747/api/v1"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "siem": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "paths": {
+    "/livez": {
+      "get": {
+        "summary": "Process liveness",
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "alive": true
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "400 invalid input, 401 unauthorized, 404 missing resource, 405 unsupported method or 503 unavailable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "no_publication",
+                    "message": "No published snapshot in selected environment"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/readyz": {
+      "get": {
+        "summary": "Readiness across all four feeds",
+        "security": [
+          {
+            "siem": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "mode",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "live",
+                "demo"
+              ],
+              "default": "live"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mode": "demo",
+                  "ready": true,
+                  "feeds": {
+                    "unified": {
+                      "version": "e7b6fa0a3a1b4b40b7d1ffc8795a5e5c",
+                      "ready": true,
+                      "stale": false,
+                      "readable": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "400 invalid input, 401 unauthorized, 404 missing resource, 405 unsupported method or 503 unavailable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "no_publication",
+                    "message": "No published snapshot in selected environment"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/feeds": {
+      "get": {
+        "summary": "List feeds with their latest publication and attempt health",
+        "security": [
+          {
+            "siem": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "mode",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "live",
+                "demo"
+              ],
+              "default": "live"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mode": "demo",
+                  "feeds": {
+                    "unified": {
+                      "version": "e7b6fa0a3a1b4b40b7d1ffc8795a5e5c",
+                      "ready": true,
+                      "stale": false,
+                      "readable": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "400 invalid input, 401 unauthorized, 404 missing resource, 405 unsupported method or 503 unavailable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "no_publication",
+                    "message": "No published snapshot in selected environment"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/feeds/{feed}/health": {
+      "get": {
+        "summary": "Inspect one feed, including stale and degraded conditions",
+        "security": [
+          {
+            "siem": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "feed",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "central",
+                "unified",
+                "ua",
+                "ip"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "mode",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "live",
+                "demo"
+              ],
+              "default": "live"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mode": "demo",
+                  "feed": "unified",
+                  "version": "e7b6fa0a3a1b4b40b7d1ffc8795a5e5c",
+                  "ready": true,
+                  "stale": false,
+                  "readable": true
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "400 invalid input, 401 unauthorized, 404 missing resource, 405 unsupported method or 503 unavailable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "no_publication",
+                    "message": "No published snapshot in selected environment"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/feeds/{feed}/snapshots/{ref}": {
+      "get": {
+        "summary": "Read immutable manifest or resolve latest",
+        "security": [
+          {
+            "siem": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "feed",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "central",
+                "unified",
+                "ua",
+                "ip"
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(latest|[0-9a-f]{32})$"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mode",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "live",
+                "demo"
+              ],
+              "default": "live"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mode": "demo",
+                  "feed": "unified",
+                  "version": "e7b6fa0a3a1b4b40b7d1ffc8795a5e5c",
+                  "outputs": 6,
+                  "sha256": {
+                    "lookup.csv": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "400 invalid input, 401 unauthorized, 404 missing resource, 405 unsupported method or 503 unavailable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "no_publication",
+                    "message": "No published snapshot in selected environment"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/feeds/{feed}/snapshots/{ref}/records": {
+      "get": {
+        "summary": "Filter canonical records at publication time in type/value order",
+        "security": [
+          {
+            "siem": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "feed",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "central",
+                "unified",
+                "ua",
+                "ip"
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(latest|[0-9a-f]{32})$"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mode",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "live",
+                "demo"
+              ],
+              "default": "live"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "source",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 50
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "version": "e7b6fa0a3a1b4b40b7d1ffc8795a5e5c",
+                  "offset": 0,
+                  "limit": 50,
+                  "total": 0,
+                  "items": []
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "400 invalid input, 401 unauthorized, 404 missing resource, 405 unsupported method or 503 unavailable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "no_publication",
+                    "message": "No published snapshot in selected environment"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/feeds/{feed}/snapshots/{ref}/records/{id}/provenance": {
+      "get": {
+        "summary": "Inspect source evidence, validity and history",
+        "security": [
+          {
+            "siem": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "feed",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "central",
+                "unified",
+                "ua",
+                "ip"
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(latest|[0-9a-f]{32})$"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mode",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "live",
+                "demo"
+              ],
+              "default": "live"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "version": "e7b6fa0a3a1b4b40b7d1ffc8795a5e5c",
+                  "type": "domain",
+                  "value": "relay.example.test",
+                  "observations": [
+                    {
+                      "source": "DNS sensor",
+                      "raw": "original source evidence"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "400 invalid input, 401 unauthorized, 404 missing resource, 405 unsupported method or 503 unavailable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "no_publication",
+                    "message": "No published snapshot in selected environment"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/feeds/{feed}/snapshots/{ref}/downloads/{file}": {
+      "get": {
+        "summary": "Download exact bytes. Pin ref to manifest.version across requests.",
+        "security": [
+          {
+            "siem": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "feed",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "central",
+                "unified",
+                "ua",
+                "ip"
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(latest|[0-9a-f]{32})$"
+            }
+          },
+          {
+            "in": "path",
+            "name": "file",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "manifest.json",
+                "compat.csv",
+                "lookup.csv",
+                "lookup.json",
+                "feed.json"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "mode",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "live",
+                "demo"
+              ],
+              "default": "live"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mode": "demo",
+                  "feed": "unified",
+                  "version": "e7b6fa0a3a1b4b40b7d1ffc8795a5e5c",
+                  "outputs": 6,
+                  "sha256": {
+                    "lookup.csv": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                  }
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "value,type,source,expires,version,mode\r\n"
+              }
+            }
+          },
+          "default": {
+            "description": "400 invalid input, 401 unauthorized, 404 missing resource, 405 unsupported method or 503 unavailable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "no_publication",
+                    "message": "No published snapshot in selected environment"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "summary": "API description",
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "openapi": "3.1.0"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "400 invalid input, 401 unauthorized, 404 missing resource, 405 unsupported method or 503 unavailable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "no_publication",
+                    "message": "No published snapshot in selected environment"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

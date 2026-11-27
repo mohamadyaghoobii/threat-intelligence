@@ -1,0 +1,10 @@
+{
+  "timeout": 15,
+  "ttl_hours": 168,
+  "fresh_hours": 24,
+  "minimum": 1,
+  "min_fraction": 0.65,
+  "allowlist": [],
+  "feeds": {},
+  "quota": 4
+}
