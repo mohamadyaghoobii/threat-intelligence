@@ -62,10 +62,17 @@ Python discovered the dead HTTP_PROXY and HTTPS_PROXY from its process environme
 
 | Provider | Direct Windows result |
 |---|---|
-| Spamhaus DROP | HTTP success and 1,737 parsed network rows. Unified and IP publication pending. |
+| Spamhaus DROP | Live IP collection fetched and parsed 1,737 IPv4 network rows. Publisher time 2026-11-26 08:56:44 UTC and expiry 2026-11-27 10:56:44 UTC. The quality gate rejected the expired input with `No currently usable lookup rows`. No IP publication ID, active rows, or export checksum. Unified publication pending. |
 | ThreatView | HTTP success and 4,541 parsed hashes. Published all 4,541 through the normal live Central flow. |
 | GitHub crawler-user-agents | HTTP success and 1,519 parsed UA rules. UA publication pending. |
 | VirusTotal | HTTP 401 / auth on an unkeyed probe. VT_API_KEY absent. Keyed enrichment and quota validation pending. |
+
+## Windows IP preflight
+
+- The Windows workspace root had no Git metadata. Top-level source and configuration were preserved locally in `data/windows-preserved-20261127234055`. The running database and snapshot directories stayed in place. The draft branch was checked out under `data/pr-checkout` and tested against the Windows runtime store.
+- `python verify_splunk_ip.py` passed with an isolated store. Four lookup networks covered IPv4, IPv6 and CIDR after deduplicating host equivalents and dropping private, reserved, allowlisted, expired and port-qualified rows. File-order matching was modeled locally, including an expired specific candidate masking a current broader range. Splunk execution remains pending.
+- Central staged, validated and installed again locally from live version `cdefe5fda1c9456ab97633a12e434d76`. Its 4,541-row SHA-256 is `940925fbe116afaedac042c2e7360640075a967f5ae54b4d89043fadd7028afa`. The artifact is under the Windows runtime store at `data/splunk-preflight/`, with freshness through 2026-11-28 19:52:31 UTC.
+- Follow [the Splunk smoke procedure](SPLUNK.md) for fresh publication gating, package import, two isolated events, drilldown, rollback and performance measurements. Real index, sourcetype, event and field mapping require server access.
 
 1. Inspect actual nginx locations, trailing slashes, redirects, auth, access logs and Splunk lookup definitions on Saturday. Confirm exact machine paths and real column order, especially Unified and IP. Compare existing consumers against SOURCES.md.
 2. Verify outbound provider access and organizational quotas. Run collection off the Search Head, inspect positive parsed counts, timestamps, changes and actual expiry. Set explicit thresholds in config.json and VT account limits in the environment. Test with actual feed sizes; the local UI loads a complete snapshot and the v1 record query scans it in memory.

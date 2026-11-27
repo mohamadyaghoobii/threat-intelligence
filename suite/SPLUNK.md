@@ -125,3 +125,59 @@ Check precedence with an overlapping network pair on the installed Splunk versio
 ```
 
 [Splunk lookup matching configuration](https://help.splunk.com/en/data-management/splunk-enterprise-admin-manual/10.6/configuration-file-reference/10.6.1-configuration-file-reference/transforms.conf)
+
+### Next Splunk IP smoke test
+
+Tonight's Windows run parsed 1,737 Spamhaus DROP rows. Publisher time was 2026-11-26 08:56:44 UTC and validity ended 2026-11-27 10:56:44 UTC. Collection rejected the snapshot with `No currently usable lookup rows`. There is no live IP artifact to import. Run `python verify_splunk_ip.py` for an isolated export and matching model. The verifier checks duplicate host equivalence, IPv4 and IPv6 overlap precedence, excluded ranges, port-qualified observations, expiry and demo isolation. Its controlled package is temporary.
+
+**Refresh, transfer and install.** From the branch's `suite/` directory, run the following in PowerShell on the collector. Set the optional direct switch only where required by that process's proxy environment.
+
+```powershell
+$env:OJAN_PROVIDER_DIRECT = '1'
+python suite.py run --mode live --feed ip
+if ($LASTEXITCODE) { throw 'Live IP publication failed; retain the installed lookup' }
+$bundle = python splunk_feed.py stage data\splunk --feed ip
+if ($LASTEXITCODE) { throw 'IP package staging failed' }
+python splunk_feed.py verify $bundle
+if ($LASTEXITCODE) { throw 'IP package validation failed' }
+```
+
+Transfer `data/splunk/<publication_id>/manifest.json` and `ojan_live_networks.csv` together. In the approved staging app's deployment workspace, run `python splunk_feed.py install <received_package_directory> <staging_app_lookup_directory>/ojan_live_networks.csv`. Deploy via the existing app distribution workflow and create the `ojan_live_networks` definition above. Record the applied version, output count and sha256 on each Search Head. If IP still lacks a fresh live publication, exercise the existing Central hash smoke test after restaging and validating fresh Central. The Windows Central preflight package lives under `data/splunk-preflight/cdefe5fda1c9456ab97633a12e434d76/` and expires at 2026-11-28 19:52:31 UTC.
+
+**Check lookup freshness first.**
+
+```spl
+| inputlookup strict=true ojan_live_networks.csv
+| stats count AS lookup_rows dc(publication_id) AS versions values(publication_id) AS publication_id max(published_epoch) AS published_epoch min(fresh_until_epoch) AS fresh_until_epoch count(eval(mode="live" AND expires_epoch>now())) AS active_rows
+| eval lookup_age_seconds=now()-published_epoch
+| eval state=case(lookup_rows=0 OR versions!=1,"unavailable",fresh_until_epoch<=now() OR active_rows=0,"stale",true(),"current")
+```
+
+An inputlookup error means unavailable. Proceed only when the state is current. Keep this status and mapped telemetry coverage visible alongside the match table.
+
+**Create two isolated events.** Select a row using `| inputlookup strict=true ojan_live_networks.csv | where expires_epoch>now() AND fresh_until_epoch>now() | head 1 | table network publication_id`. Use the address portion before the slash as the match and use `192.0.2.1` as the nonmatch. Confirm the selected address currently yields a row through the CIDR definition. Via the approved test ingestion route, write two fresh events to `ojan_ti_test` with sourcetype `ojan:ti:ip:test`, host `ojan-ip-smoke`, extracted field `verified_ip` and event IDs `ojan-ip-hit-001` and `ojan-ip-miss-001`. Verify extraction with this bounded query:
+
+```spl
+index=ojan_ti_test sourcetype="ojan:ti:ip:test" host=ojan-ip-smoke earliest=-15m latest=now (event_id=ojan-ip-hit-001 OR event_id=ojan-ip-miss-001)
+| eval mapped=if(isnotnull(verified_ip) AND (cidrmatch("0.0.0.0/0",verified_ip) OR cidrmatch("::/0",verified_ip)),1,0)
+| stats count AS observed_events dc(event_id) AS event_ids sum(mapped) AS mapped_events
+| eval coverage=if(observed_events=2 AND event_ids=2 AND mapped_events=2,"ready","missing or unmapped test telemetry")
+```
+
+**Observe the match and the negative control.** Run only with current lookup and ready coverage. The table should report one match and one nonmatch. An expired overlapping candidate is a separate outcome and may mask a broader range with `max_matches=1`. Repeat an overlap test in the installed version before rollout. Count only results explicitly classified as matches.
+
+```spl
+index=ojan_ti_test sourcetype="ojan:ti:ip:test" host=ojan-ip-smoke earliest=-15m latest=now (event_id=ojan-ip-hit-001 OR event_id=ojan-ip-miss-001)
+| lookup ojan_live_networks network AS verified_ip OUTPUT network AS ti_network source AS ti_source provider_confidence AS ti_confidence publication_id AS ti_version expires_epoch AS ti_expires fresh_until_epoch AS ti_fresh_until
+| eval outcome=case(isnull(ti_network),"nonmatch",ti_fresh_until<=now(),"stale lookup",ti_expires<=now(),"expired candidate",true(),"match")
+| table _time host event_id verified_ip ti_network ti_source ti_confidence ti_version outcome
+```
+
+Use the selected row's event ID and the panel's fixed dispatch bounds for drilldown. With Simple XML token quoting, the detail search is:
+
+```spl
+index=ojan_ti_test sourcetype="ojan:ti:ip:test" host=ojan-ip-smoke earliest=$match_earliest$ latest=$match_latest$ event_id=$match_event_id|s$
+| table _time host event_id verified_ip _raw
+```
+
+Keep the previous verified package, lookup definition, ACLs and dashboard revision. Roll back using the previous package with `install ... --rollback` and redistribute through the same app workflow. Compare equivalent bounded searches in Job Inspector using scanCount, runDuration and lookup phase costs. Compare Search Head I/O wait against the same workload and time window. The production index, sourcetype, IP field, event ID, installed overlap behavior and SOC dashboard integration require server verification.
