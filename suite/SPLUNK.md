@@ -95,3 +95,33 @@ index=ojan_ti_test sourcetype="ojan:ti:test" earliest=-15m latest=now
 3. Add views to the existing dashboard after staging review. Use narrow source selectors and short time ranges. Prefer a scheduled summary if repeated dashboard dispatch is expensive. Baseline and compare scanCount, runDuration and lookup execution cost in Job Inspector, plus Search Head I/O wait over the same test period. Record these results before expanding coverage. [Splunk Job Inspector](https://help.splunk.com/en/splunk-enterprise/search/search-manual/9.2/manage-jobs/view-search-job-properties)
 4. Keep the legacy lookup and panels available for rollback. Production ingestion, SPL execution, telemetry mappings, search cost, and dashboard results remain pending approved access.
 
+
+## IP and CIDR lookup
+
+Stage the IP feed independently of Central. The exporter reads a published live IP snapshot, validates its checksum and emits `ojan_live_networks.csv`. An unpublished live feed cannot use demo data as a substitute. Host IPs become /32 or /128 for matching. Port-qualified indicators are excluded to avoid turning an IP:port observation into a host-wide match. Identical host networks are deduplicated. Range rows are ordered with more specific prefixes first.
+
+```powershell
+$bundle = python splunk_feed.py stage data\splunk --feed ip
+if ($LASTEXITCODE) { throw 'IP staging failed' }
+python splunk_feed.py verify $bundle
+if ($LASTEXITCODE) { throw 'IP verification failed' }
+python splunk_feed.py install $bundle data\splunk\ojan_live_networks.csv
+```
+
+Use a lookup definition in the intended Splunk app context:
+
+```ini
+[ojan_live_networks]
+filename = ojan_live_networks.csv
+match_type = CIDR(network)
+max_matches = 1
+```
+
+Check precedence with an overlapping network pair on the installed Splunk version. With one result, an expired more-specific match can suppress a broader current match until the next verified refresh. Validate matching and expiry with isolated events before enabling any dashboard panel. Run the lookup against a bounded search that already exposes a verified network address as `verified_ip`:
+
+```spl
+| lookup ojan_live_networks network AS verified_ip OUTPUT network AS ti_network source AS ti_source publication_id AS ti_version expires_epoch AS ti_expires fresh_until_epoch AS ti_fresh_until
+| where isnotnull(ti_network) AND ti_expires>now() AND ti_fresh_until>now()
+```
+
+[Splunk lookup matching configuration](https://help.splunk.com/en/data-management/splunk-enterprise-admin-manual/10.6/configuration-file-reference/10.6.1-configuration-file-reference/transforms.conf)
